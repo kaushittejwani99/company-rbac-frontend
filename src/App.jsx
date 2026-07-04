@@ -188,9 +188,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [booting, setBooting] = useState(Boolean(token));
   const [message, setMessage] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalSrc, setModalSrc] = useState("");
-  const [zoom, setZoom] = useState(1);
 
   const persistCompany = (nextCompany) => {
     setCompany(nextCompany);
@@ -498,6 +495,9 @@ function Dashboard({ company, token, onCompanyUpdate, onLogout }) {
   const [saving, setSaving] = useState(false);
   const [companySaving, setCompanySaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalSrc, setModalSrc] = useState("");
+  const [zoom, setZoom] = useState(1);
 
   const isEmployers = activeTab === "employers";
   const rows = isEmployers ? employers : employees;
