@@ -1,7 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ||
-  (typeof window !== "undefined" && window.location.protocol === "https:"
-    ? "https://13.60.157.78:5000/api"
-    : "http://13.60.157.78:5000/api");
+const API_URL = import.meta.env.VITE_API_URL || "http://13.60.157.78:5000/api";
 // import.meta.env.VITE_API_URL ||
 
 const parseResponse = async (response) => {
