@@ -101,7 +101,7 @@ const validatePhoneField = (errors, field, value) => {
   }
 
   if (!phonePattern.test(text)) {
-    errors[field] = "Phone can contain only numbers, spaces, +, -, dots, and brackets";
+    errors[field] = "Phone can contain only numbers";
   }
 };
 
