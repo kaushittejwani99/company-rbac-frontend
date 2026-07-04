@@ -188,6 +188,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [booting, setBooting] = useState(Boolean(token));
   const [message, setMessage] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalSrc, setModalSrc] = useState("");
+  const [zoom, setZoom] = useState(1);
 
   const persistCompany = (nextCompany) => {
     setCompany(nextCompany);
@@ -669,13 +672,30 @@ function Dashboard({ company, token, onCompanyUpdate, onLogout }) {
     }
   };
 
+  const openImageModal = (src) => {
+    if (!src) return;
+    setModalSrc(src);
+    setZoom(1);
+    setModalOpen(true);
+  };
+
+  const closeImageModal = () => setModalOpen(false);
+
+  const zoomIn = () => setZoom((z) => Math.min(3, +(z + 0.25).toFixed(2)));
+  const zoomOut = () => setZoom((z) => Math.max(0.25, +(z - 0.25).toFixed(2)));
+
   return (
     <main className="app-shell">
-      <header className="topbar">
+          <header className="topbar">
         <div className="company-lockup">
           <div className="brand-mark small">
             {company.logo ? (
-              <img src={getImageUrl(company.logo)} alt="Company logo" style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover" }} />
+              <img
+                src={getImageUrl(company.logo)}
+                alt="Company logo"
+                style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover", cursor: "pointer" }}
+                onClick={() => openImageModal(getImageUrl(company.logo))}
+              />
             ) : (
               <Building2 size={21} />
             )}
@@ -758,6 +778,7 @@ function Dashboard({ company, token, onCompanyUpdate, onLogout }) {
             loading={loading}
             onEdit={openEdit}
             onDelete={deleteRecord}
+            onOpenImage={openImageModal}
           />
         </div>
 
@@ -784,6 +805,55 @@ function Dashboard({ company, token, onCompanyUpdate, onLogout }) {
             />
           </div>
         )}
+        {modalOpen && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            style={{
+              position: "fixed",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0,0,0,0.6)",
+              zIndex: 9999
+            }}
+            onClick={closeImageModal}
+          >
+            <div style={{ position: "relative", maxWidth: "90%", maxHeight: "90%" }} onClick={(e) => e.stopPropagation()}>
+              <button
+                aria-label="Close"
+                onClick={closeImageModal}
+                style={{
+                  position: "absolute",
+                  right: -10,
+                  top: -10,
+                  background: "#fff",
+                  borderRadius: "50%",
+                  width: 32,
+                  height: 32,
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                X
+              </button>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                  <button onClick={zoomIn} style={{ padding: "6px 8px", cursor: "pointer" }}>+</button>
+                  <button onClick={zoomOut} style={{ padding: "6px 8px", cursor: "pointer" }}>-</button>
+                </div>
+                <div style={{ overflow: "auto", maxWidth: "calc(100vw - 120px)", maxHeight: "calc(100vh - 120px)" }}>
+                  <img src={modalSrc} alt="Preview" style={{ transform: `scale(${zoom})`, transformOrigin: "center center", display: "block", maxWidth: "100%", height: "auto" }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </main>
   );
@@ -801,7 +871,7 @@ function Metric({ label, value, icon }) {
   );
 }
 
-function DirectoryTable({ type, rows, loading, onEdit, onDelete }) {
+function DirectoryTable({ type, rows, loading, onEdit, onDelete, onOpenImage }) {
   const isEmployers = type === "employers";
 
   if (loading) {
@@ -842,7 +912,12 @@ function DirectoryTable({ type, rows, loading, onEdit, onDelete }) {
             <tr key={row._id}>
               <td>
                 {row.image ? (
-                  <img src={getImageUrl(row.image)} alt={row.name} style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover" }} />
+                  <img
+                    src={getImageUrl(row.image)}
+                    alt={row.name}
+                    style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover", cursor: "pointer" }}
+                    onClick={() => onOpenImage && onOpenImage(getImageUrl(row.image))}
+                  />
                 ) : (
                   <div style={{ width: "40px", height: "40px", borderRadius: "4px", backgroundColor: "#f0f0f0" }} />
                 )}
