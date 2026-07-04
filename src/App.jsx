@@ -50,6 +50,13 @@ const phonePattern = /^[+\d\s().-]*$/;
 
 const isPresent = (value) => String(value ?? "").trim().length > 0;
 
+const getImageUrl = (value) => {
+  if (!value) return "";
+  return /^(https?:)?\/\//i.test(value)
+    ? value
+    : `http://13.60.157.78:5000/uploads/${value}`;
+};
+
 const validateTextField = (errors, field, value, label, rules = {}) => {
   const text = String(value ?? "").trim();
 
@@ -657,7 +664,7 @@ function Dashboard({ company, token, onCompanyUpdate, onLogout }) {
         <div className="company-lockup">
           <div className="brand-mark small">
             {company.logo ? (
-              <img src={`http://localhost:5000/uploads/${company.logo}`} alt="Company logo" style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover" }} />
+              <img src={getImageUrl(company.logo)} alt="Company logo" style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover" }} />
             ) : (
               <Building2 size={21} />
             )}
@@ -824,7 +831,7 @@ function DirectoryTable({ type, rows, loading, onEdit, onDelete }) {
             <tr key={row._id}>
               <td>
                 {row.image ? (
-                  <img src={`http://localhost:5000/uploads/${row.image}`} alt={row.name} style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover" }} />
+                  <img src={getImageUrl(row.image)} alt={row.name} style={{ width: "40px", height: "40px", borderRadius: "4px", objectFit: "cover" }} />
                 ) : (
                   <div style={{ width: "40px", height: "40px", borderRadius: "4px", backgroundColor: "#f0f0f0" }} />
                 )}
@@ -865,7 +872,7 @@ function CompanyPanel({ company, saving, onSave, onDelete, onClose }) {
     address: company.address || ""
   });
   const [logoFile, setLogoFile] = useState(null);
-  const [logoPreview, setLogoPreview] = useState(company.logo ? `http://localhost:5000/uploads/${company.logo}` : "");
+  const [logoPreview, setLogoPreview] = useState(company.logo ? getImageUrl(company.logo) : "");
   const [fieldErrors, setFieldErrors] = useState({});
   const [deleteText, setDeleteText] = useState("");
 
@@ -1021,7 +1028,7 @@ function RecordForm({ type, record, saving, onSave, onClose }) {
     ...(record || {})
   }));
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(record?.image ? `http://localhost:5000/uploads/${record.image}` : "");
+  const [imagePreview, setImagePreview] = useState(record?.image ? `http://13.60.157.78:5000/uploads/${record.image}` : "");
 
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -1030,7 +1037,7 @@ function RecordForm({ type, record, saving, onSave, onClose }) {
       ...(isEmployers ? emptyEmployer : emptyEmployee),
       ...(record || {})
     });
-    setImagePreview(record?.image ? `http://localhost:5000/uploads/${record.image}` : "");
+    setImagePreview(record?.image ? getImageUrl(record.image) : "");
     setImageFile(null);
     setFieldErrors({});
   }, [record, isEmployers]);
