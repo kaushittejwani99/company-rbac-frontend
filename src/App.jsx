@@ -620,7 +620,18 @@ function Dashboard({ company, token, onCompanyUpdate, onLogout }) {
         
         if (isEmployers) {
           formData.append("designation", payload.designation);
-          formData.append("permissions", JSON.stringify(payload.permissions));
+          // Ensure permissions are sent as repeated fields so multer/express parses them as an array
+          if (Array.isArray(payload.permissions)) {
+            payload.permissions.forEach((perm) => formData.append("permissions", perm));
+          } else if (typeof payload.permissions === "string") {
+            try {
+              const parsed = JSON.parse(payload.permissions);
+              if (Array.isArray(parsed)) parsed.forEach((perm) => formData.append("permissions", perm));
+              else formData.append("permissions", payload.permissions);
+            } catch (e) {
+              formData.append("permissions", payload.permissions);
+            }
+          }
         } else {
           formData.append("position", payload.position);
           formData.append("salary", payload.salary);
