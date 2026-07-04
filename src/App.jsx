@@ -378,7 +378,9 @@ function AuthScreen({ mode, setMode, onSubmit, loading, message }) {
           </button>
         </div>
 
-        <form onSubmit={submit} className="form-grid" noValidate>
+        <form onSubmit={submit} className="form-grid" noValidate autoComplete="off">
+          <input type="text" name="fakeusername" autoComplete="off" style={{ display: "none" }} />
+          <input type="password" name="fakepassword" autoComplete="new-password" style={{ display: "none" }} />
           <div className="form-heading">
             <h2>{mode === "signup" ? "Create company account" : "Welcome back"}</h2>
             <p>{mode === "signup" ? "Your company becomes the admin account." : "Log in as your company."}</p>
@@ -448,6 +450,7 @@ function AuthScreen({ mode, setMode, onSubmit, loading, message }) {
             <input
               className={fieldErrors.email ? "invalid" : ""}
               type="email"
+              autoComplete="off"
               value={form.email}
               onChange={(event) => update("email", event.target.value)}
               placeholder="admin@company.com"
@@ -461,6 +464,7 @@ function AuthScreen({ mode, setMode, onSubmit, loading, message }) {
             <input
               className={fieldErrors.password ? "invalid" : ""}
               type="password"
+              autoComplete="new-password"
               value={form.password}
               onChange={(event) => update("password", event.target.value)}
               placeholder="Minimum 6 characters"
