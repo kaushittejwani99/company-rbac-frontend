@@ -1192,7 +1192,14 @@ function RecordForm({ type, record, saving, onSave, onClose }) {
           status: form.status,
           ...(imageFile && { imageFile })
         }
-      : {
+        // Ensure backend always receives a non-empty permissions array
+        if (isEmployers) {
+          if (!Array.isArray(payload.permissions) || payload.permissions.length === 0) {
+            payload.permissions = ["view_dashboard"];
+          }
+        }
+
+        onSave(payload);
           name: form.name,
           email: form.email,
           phone: form.phone,
